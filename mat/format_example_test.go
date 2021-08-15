@@ -98,6 +98,94 @@ func ExampleFormatted_python() {
 	//      [0, 0, 6]]
 }
 
+func ExampleCFormatted() {
+	a := mat.NewCDense(3, 2, []complex128{1 + 2i, 2 - 4i, 0, 3 + 6i, 0, 0})
+
+	// Create a complex matrix formatting value with a prefix and
+	// calculating each column width individually...
+	fa := mat.CFormatted(a, mat.Prefix("    "), mat.Squeeze())
+
+	// and then print with and without zero value elements.
+	fmt.Printf("with all values:\na = %v\n\n", fa)
+	fmt.Printf("with only non-zero values:\na = % v\n\n", fa)
+
+	// Modify the matrix...
+	a.Set(0, 1, 0)
+
+	// and print it without zero value elements.
+	fmt.Printf("after modification with only non-zero values:\na = % v\n\n", fa)
+
+	// Modify the matrix again...
+	a.Set(0, 1, 123.456-314.159i)
+
+	// and print it using scientific notation for large exponents.
+	fmt.Printf("after modification with scientific notation:\na = %.2g\n\n", fa)
+	// See golang.org/pkg/fmt/ floating-point verbs for a comprehensive list.
+
+	// Output:
+	// with all values:
+	// a = ⎡1+2i  2-4i⎤
+	//     ⎢  0i  3+6i⎥
+	//     ⎣  0i    0i⎦
+	//
+	// with only non-zero values:
+	// a = ⎡1+2i  2-4i⎤
+	//     ⎢   .  3+6i⎥
+	//     ⎣   .     .⎦
+	//
+	// after modification with only non-zero values:
+	// a = ⎡1+2i     .⎤
+	//     ⎢   .  3+6i⎥
+	//     ⎣   .     .⎦
+	//
+	// after modification with scientific notation:
+	// a = ⎡1+2i  1.2e+02-3.1e+02i⎤
+	//     ⎢  0i              3+6i⎥
+	//     ⎣  0i                0i⎦
+}
+
+func ExampleCFormatted_mATLAB() {
+	a := mat.NewCDense(3, 2, []complex128{1 + 2i, 2 - 4i, 0, 3 + 6i, 0, 0})
+
+	// Create a complex matrix formatting value using MATLAB format...
+	fa := mat.CFormatted(a, mat.FormatMATLAB())
+
+	// and then print with and without layout formatting.
+	fmt.Printf("standard syntax:\na = %v\n\n", fa)
+	fmt.Printf("layout syntax:\na = %#v\n\n", fa)
+
+	// Output:
+	// standard syntax:
+	// a = [1+2i 2-4i; 0i 3+6i; 0i 0i]
+	//
+	// layout syntax:
+	// a = [
+	//  1+2i 2-4i
+	//    0i 3+6i
+	//    0i   0i
+	// ]
+}
+
+func ExampleCFormatted_python() {
+	a := mat.NewCDense(3, 2, []complex128{1 + 2i, 2 - 4i, 0, 3 + 6i, 0, 0})
+
+	// Create a complex matrix formatting value with a prefix using Python format...
+	fa := mat.CFormatted(a, mat.Prefix("    "), mat.FormatPython())
+
+	// and then print with and without layout formatting.
+	fmt.Printf("standard syntax:\na = %v\n\n", fa)
+	fmt.Printf("layout syntax:\na = %#v\n\n", fa)
+
+	// Output:
+	// standard syntax:
+	// a = [[1+2j, 2-4j], [0j, 3+6j], [0j, 0j]]
+	//
+	// layout syntax:
+	// a = [[1+2j, 2-4j],
+	//      [  0j, 3+6j],
+	//      [  0j,   0j]]
+}
+
 func ExampleExcerpt() {
 	// Excerpt allows diagnostic display of very large
 	// matrices and vectors.
